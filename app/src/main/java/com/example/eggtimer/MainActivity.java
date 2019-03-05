@@ -10,45 +10,52 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.eggtimer.R;
+
 public class MainActivity extends AppCompatActivity {
 
     SeekBar timerSeekBar;
-    TextView timerTetView;
-    Boolean counterIsActive = false;
+    TextView timerTextView;
     Button controllerButton;
+    Boolean counterIsActive = false;
     CountDownTimer countDownTimer;
 
-    public void resetTimer(){
-        timerTetView.setText("0:30");
+    public void resetTimer() {
+
+        timerTextView.setText("0:30");
         timerSeekBar.setProgress(30);
         countDownTimer.cancel();
         controllerButton.setText("Go!");
         timerSeekBar.setEnabled(true);
         counterIsActive = false;
-    }
-    public void updateTimer(int secondsLeft){
 
-        int minutes = secondsLeft/60;
+    }
+
+    public void updateTimer(int secondsLeft) {
+
+        int minutes = (int) secondsLeft / 60;
         int seconds = secondsLeft - minutes * 60;
 
         String secondString = Integer.toString(seconds);
 
-        if (seconds <= 9){
+        if (seconds <= 9) {
+
             secondString = "0" + secondString;
+
         }
 
-        timerTetView.setText(Integer.toString(minutes) + ":" + Integer.toString(seconds));
-
+        timerTextView.setText(Integer.toString(minutes) + ":" + secondString);
     }
 
+    public void controlTimer(View view) {
 
-    public void controlTimer(View view){
+
         if (counterIsActive == false) {
+
             counterIsActive = true;
             timerSeekBar.setEnabled(false);
             controllerButton.setText("Stop");
 
-            Log.i("Button pressed", "Pressed");
             countDownTimer = new CountDownTimer(timerSeekBar.getProgress() * 1000 + 100, 1000) {
 
                 @Override
@@ -62,29 +69,32 @@ public class MainActivity extends AppCompatActivity {
                 public void onFinish() {
 
                     resetTimer();
+                    timerTextView.setText("0:00");
                     MediaPlayer mplayer = MediaPlayer.create(getApplicationContext(), R.raw.air);
                     mplayer.start();
                 }
             }.start();
+        } else {
 
-            } else  {
-           resetTimer();
+            resetTimer();
         }
-        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SeekBar timerSeekBar = findViewById(R.id.timerSeekBar);
-        timerTetView = findViewById(R.id.timerTextView);
-        controllerButton = findViewById(R.id.controllerButton);
+        timerSeekBar = (SeekBar)findViewById(R.id.timerSeekBar);
+        timerTextView = (TextView)findViewById(R.id.timerTextView);
+        controllerButton = (Button)findViewById(R.id.controllerButton);
 
         timerSeekBar.setMax(600);
         timerSeekBar.setProgress(30);
 
         timerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -102,6 +112,5 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 }
